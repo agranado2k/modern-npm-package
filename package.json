@@ -2,11 +2,34 @@
 	"name": "@agranado2k/modern-npm-package",
 	"version": "1.0.0",
 	"description": "",
-	"main": "index.js",
+	"types": "./lib/cjs/types/index.d.ts",
+	"main": "./lib/cjs/index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\""
+		"clean": "rm -rf ./lib",
+		"build": "npm run clean && npm run build:esm && npm run build:cjs",
+		"build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
+		"build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
+		"prepack": "npm run build"
+	},
+	"files": [
+		"lib/**/*"
+	],
+	"exports": {
+		".": {
+			"import": {
+				"types": "./lib/esm/types/index.d.ts",
+				"default": "./lib/esm/index.mjs"
+			},
+			"require": {
+				"types": "./lib/cjs/types/index.d.ts",
+				"default": "./lib/cjs/index.js"
+			}
+		}
 	},
 	"keywords": [],
 	"author": "",
-	"license": "ISC"
+	"license": "ISC",
+	"dependencies": {
+		"typescript": "^4.9.5"
+	}
 }
