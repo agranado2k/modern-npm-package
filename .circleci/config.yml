@@ -1,0 +1,83 @@
+# @format
+
+version: 2.1
+
+orbs:
+  snyk: snyk/snyk@1.4.0
+
+jobs:
+  test:
+    parameters:
+      node-version:
+        type: string
+    docker:
+      - image: << parameters.node-version >>
+    steps:
+      - checkout
+      - run:
+          name: Test lib
+          command: npm i && npm test
+  security_ checks:
+    parameters:
+      node-version:
+        type: string
+    docker:
+      - image: << parameters.node-version >>
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: |
+            npm install --save
+      - snyk/scan
+  build:
+    parameters:
+      node-version:
+        type: string
+    docker:
+      - image: << parameters.node-version >>
+    steps:
+      - checkout
+      - run:
+          name: Build lib
+          command: npm i && npm run build
+
+workflows:
+  build-and-publish:
+    jobs:
+      - test:
+          name: Run test with Node 16.x
+          node-version: cimg/node:16.19
+      - security_ checks:
+          name: Run security checks with Node 16.x
+          node-version: cimg/node:16.19
+      - build:
+          name: Build with Node 16.x
+          node-version: cimg/node:16.19
+          requires:
+            - Run test with Node 16.x
+            - Run security checks with Node 16.x
+      - test:
+          name: Run test with Node 18.x
+          node-version: cimg/node:18.14
+      - security_ checks:
+          name: Run security checks with Node 18.x
+          node-version: cimg/node:18.14
+      - build:
+          name: Build with Node 18.x
+          node-version: cimg/node:18.14
+          requires:
+            - Run test with Node 18.x
+            - Run security checks with Node 18.x
+      - test:
+          name: Run test with Node 19.x
+          node-version: cimg/node:19.7
+      - security_ checks:
+          name: Run security checks with Node 19.x
+          node-version: cimg/node:16.19
+      - build:
+          name: Build with Node 19.x
+          node-version: cimg/node:19.7
+          requires:
+            - Run test with Node 19.x
+            - Run security checks with Node 19.x
