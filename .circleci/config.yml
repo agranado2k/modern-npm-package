@@ -51,7 +51,7 @@ jobs:
       - checkout
       - run:
           name: install
-          command: npm install
+          command: npm i && npm i -D semantic-release
       - run:
           name: release
           command: npm run semantic-release || true
@@ -73,7 +73,7 @@ workflows:
             - Run security checks with Node 16.x
       - publish:
           name: Publish for Node 16.x
-          node-version: cimg/node:16.19
+          node-version: cimg/node:18.14
           requires:
             - Build with Node 16.x
       - test:
