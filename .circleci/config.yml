@@ -41,6 +41,20 @@ jobs:
       - run:
           name: Build lib
           command: npm i && npm run build
+  publish:
+    parameters:
+      node-version:
+        type: string
+    docker:
+      - image: << parameters.node-version >>
+    steps:
+      - checkout
+      - run:
+          name: install
+          command: npm install
+      - run:
+          name: release
+          command: npm run semantic-release || true
 
 workflows:
   build-and-publish:
@@ -57,6 +71,11 @@ workflows:
           requires:
             - Run test with Node 16.x
             - Run security checks with Node 16.x
+      - publish:
+          name: Publish for Node 16.x
+          node-version: cimg/node:16.19
+          requires:
+            - Build with Node 16.x
       - test:
           name: Run test with Node 18.x
           node-version: cimg/node:18.14
@@ -69,6 +88,11 @@ workflows:
           requires:
             - Run test with Node 18.x
             - Run security checks with Node 18.x
+      - publish:
+          name: Publish for Node 18.x
+          node-version: cimg/node:18.14
+          requires:
+            - Build with Node 18.x
       - test:
           name: Run test with Node 19.x
           node-version: cimg/node:19.7
@@ -81,3 +105,8 @@ workflows:
           requires:
             - Run test with Node 19.x
             - Run security checks with Node 19.x
+      - publish:
+          name: Publish for Node 19.x
+          node-version: cimg/node:19.7
+          requires:
+            - Build with Node 19.x

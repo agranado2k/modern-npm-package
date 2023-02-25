@@ -1,6 +1,6 @@
 {
 	"name": "@agranado2k/modern-npm-package",
-	"version": "1.0.0",
+	"version": "0.0.0-development",
 	"description": "",
 	"types": "./lib/cjs/types/index.d.ts",
 	"main": "./lib/cjs/index.js",
@@ -10,7 +10,8 @@
 		"build:esm": "tsc -p ./configs/tsconfig.esm.json && mv lib/esm/index.js lib/esm/index.mjs",
 		"build:cjs": "tsc -p ./configs/tsconfig.cjs.json",
 		"prepack": "npm run build",
-		"test": "mocha"
+		"test": "mocha",
+		"semantic-release": "semantic-release"
 	},
 	"files": [
 		"lib/**/*"
@@ -27,6 +28,14 @@
 			}
 		}
 	},
+	"release": {
+		"branches": [
+			"main"
+		]
+	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"keywords": [],
 	"author": "",
 	"license": "ISC",
@@ -38,6 +47,11 @@
 		"@types/mocha": "^10.0.1",
 		"chai": "^4.3.7",
 		"mocha": "^10.2.0",
+		"semantic-release": "^20.1.0",
 		"ts-node": "^10.9.1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/agranado2k/modern-npm-package.git"
 	}
 }
